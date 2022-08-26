@@ -6,7 +6,7 @@ import Input from "components/input";
 import List from "components/list";
 import Table from "components/table";
 import type { NextPage } from "next";
-import * as Styles from "./styles";
+import * as Styles from "styles/styles";
 
 import { Item } from "types/list";
 import Modal from "components/modal";
@@ -19,7 +19,6 @@ import {
 
 import { FaEye } from "react-icons/fa";
 import DropdownMenu from "components/dropdown";
-import { formatDateTo } from "utils/formartDate";
 const Home: NextPage = () => {
   const [listItem, setListItem] = useState<Item[]>([
     {
