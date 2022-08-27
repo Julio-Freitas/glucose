@@ -10,7 +10,7 @@ export const Button = styled.button<buttonStyleProps>`
   border-left: none;
   color: #fff;
   display: inline-flex;
-  padding: 5px 10px;
+  padding: 8px 10px;
   font-weight: 500;
   font-size: 14px;
   line-height: 17px;

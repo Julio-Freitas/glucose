@@ -19,6 +19,7 @@ import {
 
 import { FaEye } from "react-icons/fa";
 import DropdownMenu from "components/dropdown";
+import Alert from "components/alert";
 const Home: NextPage = () => {
   const [listItem, setListItem] = useState<Item[]>([
     {
@@ -38,6 +39,7 @@ const Home: NextPage = () => {
   const [correction, setCorrection] = useState<string | null>(null);
   const [pressure, setPressure] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     getAllGlucose().then((results) => setListItem(results as Item[]));
@@ -62,15 +64,8 @@ const Home: NextPage = () => {
     const monthForm = Number(date?.split("-")[1]);
     const dayForm = Number(date?.split("-")[2]);
 
-    if (isFill) {
-      alert("Os campo date, hora ou glicemia devem ser preenchidos!");
-      return false;
-    }
-
-    if (monthForm > monthCurrent || dayForm > dayCurrent) {
-      alert("Não pode inserir Datas futuras!");
-      return false;
-    }
+    if (isFill) return false;
+    if (monthForm > monthCurrent || dayForm > dayCurrent) return false;
 
     return true;
   };
@@ -78,6 +73,7 @@ const Home: NextPage = () => {
   const _handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    setShowAlert(!canAddField());
     if (!canAddField()) return;
     const newItem: Item = {
       id: uuidv4(),
@@ -167,6 +163,9 @@ const Home: NextPage = () => {
         statusModal={showModal}
         onCloseModal={(status) => setShowModal(status)}
       />
+      {showAlert && (
+        <Alert delay={5000} hiddenAlert={(status) => setShowAlert(!status)} />
+      )}
     </Styles.Container>
   );
 };

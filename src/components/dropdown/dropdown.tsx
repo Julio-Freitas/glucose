@@ -1,33 +1,39 @@
-import { useState , useEffect, useRef} from "react";
-import { FaFilter } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { FaFilter, FaList, FaCalendarAlt } from "react-icons/fa";
 import * as Styles from "./style";
+
 type DropdownProps = {
   optionSelected: (value: string) => void;
-  className?: string
+  className?: string;
 };
+
 
 const options = [
   {
     value: "all",
     text: "Todos",
+    icon: <FaList />,
   },
   {
     value: "last-3-week",
     text: "Últimas 3 semanas",
+    icon: <FaCalendarAlt />
   },
 ];
-const DropdownMenu: React.FC<DropdownProps> = ({ optionSelected, className = "" }) => {
+const DropdownMenu: React.FC<DropdownProps> = ({
+  optionSelected,
+  className = "",
+}) => {
   const [dropdown, setDropdown] = useState(false);
   const [option, setOption] = useState("");
   const ref = useRef<HTMLDivElement | null>(null);
 
-
-  useEffect(()=> {
-    const handler= (event: any ) => {
+  useEffect(() => {
+    const handler = (event: any) => {
       if (dropdown && ref.current && !ref.current.contains(event.target)) {
         setDropdown(false);
-       }
-    }
+      }
+    };
 
     document.addEventListener("mousedown", handler);
     document.addEventListener("touchstart", handler);
@@ -35,13 +41,13 @@ const DropdownMenu: React.FC<DropdownProps> = ({ optionSelected, className = "" 
     return () => {
       document.removeEventListener("mousedown", handler);
       document.removeEventListener("touchstart", handler);
-     }; 
-
-  },[dropdown])
+    };
+  }, [dropdown]);
 
   const _handleSelectedOption = (value: string) => {
     setOption(value);
     optionSelected(value);
+    setDropdown(false);
   };
 
   return (
@@ -51,16 +57,17 @@ const DropdownMenu: React.FC<DropdownProps> = ({ optionSelected, className = "" 
         type="button"
         aria-expanded={dropdown ? "true" : "false"}
       >
-      <FaFilter />  Filtrar Por
+        <FaFilter /> Filtrar Por
       </Styles.Button>
 
       <Styles.Select dropdown={dropdown}>
-        {options.map(({ value, text }) => (
+        {options.map(({ value, text, icon }) => (
           <Styles.Option
             selected={value === option}
             onClick={() => _handleSelectedOption(value)}
             key={value}
           >
+            {icon}
             {text}
           </Styles.Option>
         ))}

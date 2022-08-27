@@ -33,6 +33,8 @@ export const Option = styled.li<OptionAttr>`
   transition: all 0.2s;
   padding: 8px;
   cursor: pointer;
+  display: inline-flex;
+  gap: 5px;
 
   &:hover {
     background-color: #002ead;
