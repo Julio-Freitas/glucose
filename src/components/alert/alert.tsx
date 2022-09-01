@@ -1,30 +1,48 @@
 import { useEffect, useState } from "react";
 import * as Styled from "./style";
 
-type AlertProps = { delay?: number; hiddenAlert: (time: boolean) => void };
 
-const Alert: React.FC<AlertProps> = ({ delay, hiddenAlert }) => {
-  const [counter, setCounter] = useState((delay || 1000) / 1000);
+type AlertProps = {
+  delay?: number;
+  hiddenAlert: (time: boolean) => void;
+  msg: string;
+  hidden: boolean;
+  type: "sucess" | "error" | "warn";
+};
+
+const Alert: React.FC<AlertProps> = ({
+  delay,
+  hiddenAlert,
+  msg,
+  hidden,
+  type,
+}) => {
+  const [progress, setprogress] = useState(0);
+  const delayref = (delay || 100) / 100;
 
   useEffect(() => {
-    const timeId =
-      counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
-
-      if(counter === 0 ) {
-        hiddenAlert(true)
-      }
-    return () => {
-      timeId ? clearTimeout(timeId) : null;
-    };
-  }, [counter]);
+    if (hidden) {
+      const interval = setInterval(() => {
+        setprogress((oldvalue) => {
+          let newValue = oldvalue + 1;
+          if (newValue >= 100) {
+            clearInterval(interval);
+            hiddenAlert(true);
+            return 100;
+          }
+          return newValue;
+        });
+      }, delayref);
+      return;
+    }
+    setprogress(0);
+  }, [hidden]);
 
   return (
-    <Styled.ContainerAlert type="sucess" hidden={counter === 1}>
-      <Styled.Progress time={`${counter}s`} />
+    <Styled.ContainerAlert type={type} hidden={hidden}>
+      <Styled.Progress width={`${progress}%`} />
       <Styled.Context>
-        <Styled.Text>
-          Os campo date, hora ou glicemia devem ser preenchidos!
-        </Styled.Text>
+        <Styled.Text>{msg}</Styled.Text>
       </Styled.Context>
     </Styled.ContainerAlert>
   );

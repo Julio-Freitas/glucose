@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 export const GlobalStyles = createGlobalStyle`
 
 
@@ -9,11 +9,12 @@ export const GlobalStyles = createGlobalStyle`
   box-sizing: border-box;
 }
   html{
-    font-size: 62.5%
+    font-size: 84.5%
   }
   body{
     height: 100%;
     font-family: "Overpass", sans-serif;
-    font-size: ${({ theme }) => theme.font.sizes.medium};
+    background-color: ${props => props.theme.colors.primary};
+    color: ${props => props.theme.colors.text};
   }
 `;

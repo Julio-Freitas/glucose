@@ -4,7 +4,6 @@ import { ListItem } from "types/list";
 import { formatDateTo } from "utils/formartDate";
 import { FaTrash, FaEdit } from "react-icons/fa";
 
-
 const List: React.FC<ListItem> = ({ list, onDeleteItem, onEditItem }) => {
   return (
     <Style.Ul>
@@ -24,8 +23,12 @@ const List: React.FC<ListItem> = ({ list, onDeleteItem, onEditItem }) => {
               <Style.TextSpan>{item.correction}</Style.TextSpan>
               <Style.TextSpan>{item.pressure}</Style.TextSpan>
               <Style.GroupActions>
-                <FaTrash onClick={() => item.id && onDeleteItem(item.id)} />
-                <FaEdit onClick={() => item.id && onEditItem(item.id)}/>
+                <FaTrash
+                  onClick={() =>
+                    item.documentId && onDeleteItem(item.documentId)
+                  }
+                />
+                <FaEdit onClick={() => onEditItem(item)} />
               </Style.GroupActions>
             </Style.Li>
           ))}

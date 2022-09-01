@@ -15,8 +15,8 @@ const options = [
     icon: <FaList />,
   },
   {
-    value: "last-3-week",
-    text: "Últimas 3 semanas",
+    value: "last-3-days",
+    text: "Últimos 3 dias",
     icon: <FaCalendarAlt />
   },
 ];

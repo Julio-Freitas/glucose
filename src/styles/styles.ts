@@ -1,3 +1,4 @@
+import Button from "components/button";
 import styled from "styled-components";
 
 export const Container = styled.section`
@@ -51,3 +52,8 @@ export const WrapperButtons = styled.div`
   flex-direction: column;
   }
 `;
+
+export const ThemeButton = styled(Button)`
+  position: absolute;
+  right: 10px;
+`

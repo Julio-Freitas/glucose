@@ -1,24 +1,14 @@
-import styled, { keyframes, css } from "styled-components";
+import styled  from "styled-components";
 
-enum AlertColors {
-  sucess = "#63e6be",
+export enum AlertColors {
+  sucess = "#16a77a",
   error = "#d9480f",
-  warn = "#fab00",
+  warn = "#f59900",
 }
 
-type AlertAttr = {
+export type AlertAttr = {
   type: keyof typeof AlertColors;
 };
-
-const progressWidth = keyframes`
-  from {
-    width: 0%;
-  }
-
-  to {
-    width: 100%;
-  }
-`;
 
 export const ContainerAlert = styled.div<AlertAttr>`
   position: fixed;
@@ -29,7 +19,7 @@ export const ContainerAlert = styled.div<AlertAttr>`
   max-width: 305px;
   background-color: ${({ type }) => AlertColors[type]};
   box-shadow: 0 0.25rem 0.3rem #120125;
-  visibility: ${({ hidden }) => (hidden ? `hidden` : "visible")};
+  visibility: ${({ hidden }) => (hidden ? "visible" : "hidden")};
 `;
 
 export const Context = styled.div``;
@@ -37,10 +27,11 @@ export const Context = styled.div``;
 export const Text = styled.div`
   color: #fff;
   font-size: 14px;
+  padding: 3px;
 `;
 
 type DelayProps = {
-  time: string;
+    width: string;
 };
 export const Progress = styled.div<DelayProps>`
   position: absolute;
@@ -54,13 +45,9 @@ export const Progress = styled.div<DelayProps>`
   ::after {
     content: "";
     display: block;
-    background-color: red;
+    background-color: #212121;
     height: 100%;
-    animation: ${({ time }) =>
-      time
-        ? css`
-            ${progressWidth} ${time}  linear forwards
-          `
-        : ""};
+    transition: width ease-in-out 0.05s;
+    width: ${({width}) => width || 0} ;
   }
 `;

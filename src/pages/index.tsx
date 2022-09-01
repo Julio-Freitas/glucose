@@ -1,25 +1,32 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import type { NextPage } from "next";
+import * as Styles from "styles/styles";
+import { Item } from "types/list";
 
 import Button from "components/button";
 import Input from "components/input";
 import List from "components/list";
 import Table from "components/table";
-import type { NextPage } from "next";
-import * as Styles from "styles/styles";
-
-import { Item } from "types/list";
 import Modal from "components/modal";
 
 import {
   addGlucose,
   glucoseLastThreeDays,
   getAllGlucose,
+  deleteGlucose,
+  updateGLucose,
 } from "lib/service/glucose";
 
 import { FaEye } from "react-icons/fa";
 import DropdownMenu from "components/dropdown";
 import Alert from "components/alert";
+
+type AlertState = {
+  msg: string;
+  hidden: boolean;
+  type: "sucess" | "error" | "warn";
+};
 const Home: NextPage = () => {
   const [listItem, setListItem] = useState<Item[]>([
     {
@@ -39,11 +46,21 @@ const Home: NextPage = () => {
   const [correction, setCorrection] = useState<string | null>(null);
   const [pressure, setPressure] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showAlert, setShowAlert] = useState(false);
+  const [documentId, setDocumentId] = useState<string | null>(null);
 
+  const [statusAlert, setStatusAlert] = useState<AlertState>({
+    msg: "",
+    hidden: false,
+    type: "warn",
+  });
+
+  const getAllList = useCallback(
+    async () => setListItem((await getAllGlucose()) as Item[]),
+    []
+  );
   useEffect(() => {
-    getAllGlucose().then((results) => setListItem(results as Item[]));
-  }, []);
+    getAllList();
+  }, [getAllList]);
 
   const filterGlucose = async () => {
     const result = await glucoseLastThreeDays();
@@ -55,6 +72,8 @@ const Home: NextPage = () => {
     setTime("");
     setGlucose("");
     setCorrection("");
+    setPressure("");
+    setDocumentId(null)
   };
 
   const canAddField = () => {
@@ -64,8 +83,22 @@ const Home: NextPage = () => {
     const monthForm = Number(date?.split("-")[1]);
     const dayForm = Number(date?.split("-")[2]);
 
-    if (isFill) return false;
-    if (monthForm > monthCurrent || dayForm > dayCurrent) return false;
+    if (isFill) {
+      setStatusAlert({
+        msg: "Os campo date, hora ou glicemia devem ser preenchidos!",
+        hidden: true,
+        type: "warn",
+      });
+      return false;
+    }
+    if (monthForm > monthCurrent || dayForm > dayCurrent) {
+      setStatusAlert({
+        msg: "Não é possivel lançar datas futuras",
+        hidden: true,
+        type: "warn",
+      });
+      return false;
+    }
 
     return true;
   };
@@ -73,8 +106,10 @@ const Home: NextPage = () => {
   const _handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setShowAlert(!canAddField());
     if (!canAddField()) return;
+    const msg = documentId
+      ? "Atualizado com sucesso!"
+      : "Adicionado com sucesso!";
     const newItem: Item = {
       id: uuidv4(),
       date,
@@ -83,23 +118,45 @@ const Home: NextPage = () => {
       correction,
       pressure,
     };
-    setListItem([...listItem, { ...newItem }]);
+
+    documentId ? updateGLucose(documentId, newItem) : addGlucose(newItem);
+    setStatusAlert({
+      msg,
+      hidden: true,
+      type: "sucess",
+    });
     clearAllFields();
-    addGlucose(newItem);
-    getAllGlucose().then((results) => setListItem(results as Item[]));
+    getAllList();
   };
 
   const handleFilter = (value: string) => {
-    if (value === "all") {
-      getAllGlucose().then((results) => setListItem(results as Item[]));
-      return;
-    }
+    if (value === "all") return getAllList();
 
-    if (value === "last-3-week") {
-      filterGlucose();
-      return;
-    }
+    if (value === "last-3-days") return filterGlucose();
   };
+
+  const _handleDeletedItem = (documentId: string) => {
+    deleteGlucose(documentId);
+    getAllList();
+
+    setStatusAlert({
+      msg: 'Deletado com sucesso!',
+      hidden: true,
+      type: "sucess",
+    });
+  };
+
+  const _handleEditItem = (item: Item) => {
+    const { correction, date, documentId, glucose, id, pressure, time } = item;
+
+    setDate(date);
+    setTime(time as string);
+    setGlucose(glucose as string);
+    setCorrection(correction);
+    setPressure(pressure as string);
+    setDocumentId(documentId as string);
+  };
+
   return (
     <Styles.Container>
       <Styles.WrapperButtons>
@@ -148,24 +205,33 @@ const Home: NextPage = () => {
           name="pressure"
           placeholder="Pressão"
           value={pressure || ""}
-          onChange={({ target }) => setPressure(target?.value)}
+          onChange={({ target }) =>
+            setPressure(target?.value.replace(/[A-Z]/gi, ""))
+          }
         />
         <Button type="submit" text="Salvar" />
       </Styles.Form>
       <Table>
         <List
           list={listItem}
-          onDeleteItem={(id: any) => console.log(id)}
-          onEditItem={(id: any) => console.log(id)}
+          onDeleteItem={_handleDeletedItem}
+          onEditItem={_handleEditItem}
         />
       </Table>
       <Modal
         statusModal={showModal}
         onCloseModal={(status) => setShowModal(status)}
       />
-      {showAlert && (
-        <Alert delay={5000} hiddenAlert={(status) => setShowAlert(!status)} />
-      )}
+
+      <Alert
+        delay={2000}
+        hiddenAlert={(status) =>
+          setStatusAlert({ msg: "", hidden: !status, type: "warn" })
+        }
+        msg={statusAlert.msg}
+        hidden={statusAlert.hidden}
+        type={statusAlert.type}
+      />
     </Styles.Container>
   );
 };
