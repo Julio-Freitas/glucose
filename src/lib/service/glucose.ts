@@ -19,10 +19,13 @@ export const getAllGlucose = async () => {
   const querySnapshot = await getDocs(glucoseQuery);
   const results: QueryDocumentSnapshot<DocumentData>[] = [];
   querySnapshot.forEach((snapshot) => results.push(snapshot));
-  const allGlucose = results.map((data) => ({
-    ...data.data(),
-    documentId: data.id,
-  }));
+  const allGlucose = results
+    .map((data) => ({
+      ...data.data(),
+      documentId: data.id,
+    }))
+    .sort((a: DocumentData, b: DocumentData) => b.documentId - a.documentId);
+
   return allGlucose;
 };
 
@@ -49,15 +52,24 @@ export const addGlucose = async (glucoseData: any) => {
 
 export const glucoseLastThreeDays = async () => {
   const allGlucose = (await getAllGlucose()) as Item[];
-  const now = new Date();
-  const nowDay = now.getDate() - 3;
-  const nowMonth = now.getMonth()
-  const nowYear = now.getFullYear();
-  const filter = allGlucose.filter((item) => {
-    const itemDate = new Date(item.date as string);
-    return (
-      itemDate.getDate() >= nowDay && nowYear === itemDate.getFullYear() && nowMonth === itemDate.getMonth()
-    );
-  });
+
+  const filter = allGlucose.filter(
+    (item) => getDateFor(item.date as string) <= 3
+  );
+
   return filter;
 };
+
+function getDateFor(date: string): number {
+  const now = new Date();
+  const ms = 1000;
+  const seconds = 60;
+  const minutes = 60;
+  const day = 24;
+
+  const timeOfOneDay = ms * minutes * seconds * day;
+  const pastDate = new Date(date);
+  const diff = Math.abs(now.getTime() - pastDate.getTime());
+  const days = Math.ceil(diff / timeOfOneDay);
+  return days;
+}
