@@ -13,20 +13,22 @@ import { firestore } from "lib/firebase/initFirebase";
 import { Item } from "types/list";
 
 const todosCollection = collection(firestore, "glucose");
-
+type TypeSnapshot = QueryDocumentSnapshot<DocumentData>[];
 export const getAllGlucose = async () => {
   const glucoseQuery = query(todosCollection);
   const querySnapshot = await getDocs(glucoseQuery);
-  const results: QueryDocumentSnapshot<DocumentData>[] = [];
-  querySnapshot.forEach((snapshot) => results.push(snapshot));
-  const allGlucose = results
-    .map((data) => ({
-      ...data.data(),
-      documentId: data.id,
-    }))
-    .sort((a: DocumentData, b: DocumentData) => b.documentId - a.documentId);
+  const results: TypeSnapshot = [];
 
-  return allGlucose;
+  querySnapshot.forEach((snapshot) => results.push(snapshot));
+  const allGlucose = results.map((data) => ({
+    ...data.data(),
+    documentId: data.id,
+  })) as Item[];
+
+  return allGlucose.sort(
+    (a, b) =>
+      Number(new Date(b.date as string)) - Number(new Date(a.date as string))
+  );
 };
 
 export const updateGLucose = async (documentId: string, glucoseData: any) => {
