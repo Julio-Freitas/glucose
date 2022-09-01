@@ -22,17 +22,20 @@ export const Form = styled.form`
   gap: 15px;
   max-width: 100%;
   margin: 0 auto;
+  justify-content: right;
 `;
 
-export const WrapperButtons = styled.div`
+export const WrapperButtons = styled.div<{ content?: string }>`
   display: flex;
   align-items: stretch;
-  justify-content: space-between;
+  justify-content: ${({ content }) => content || "space-between"};
   flex-wrap: wrap;
   gap: 20px;
+  width: 100%;
 
   @media (max-width: 768px) {
-    .dropdown, button {
+    .dropdown,
+    button {
       min-width: auto;
       flex: 0.5;
     }
@@ -49,11 +52,11 @@ export const WrapperButtons = styled.div`
   }
 
   @media (max-width: 320px) {
-  flex-direction: column;
+    flex-direction: column;
   }
 `;
 
 export const ThemeButton = styled(Button)`
   position: absolute;
   right: 10px;
-`
+`;

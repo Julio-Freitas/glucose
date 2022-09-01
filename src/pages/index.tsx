@@ -73,7 +73,7 @@ const Home: NextPage = () => {
     setGlucose("");
     setCorrection("");
     setPressure("");
-    setDocumentId(null)
+    setDocumentId(null);
   };
 
   const canAddField = () => {
@@ -83,9 +83,8 @@ const Home: NextPage = () => {
     const dayCurrent = new Date().getDate();
     const monthForm = Number(date?.split("-")[1]);
     const dayForm = Number(date?.split("-")[2]);
-    const yearForm = new Date(date as string).getFullYear()
-    const currentYear =  new Date().getFullYear()
-
+    const yearForm = new Date(date as string).getFullYear();
+    const currentYear = new Date().getFullYear();
 
     if (isFill) {
       setStatusAlert({
@@ -95,8 +94,8 @@ const Home: NextPage = () => {
       });
       return false;
     }
-    console.log(yearForm !== currentYear)
-    
+    console.log(yearForm !== currentYear);
+
     if (monthForm > monthCurrent) {
       setStatusAlert({
         msg: "Não é possivel lançar datas futuras",
@@ -146,7 +145,7 @@ const Home: NextPage = () => {
     getAllList();
 
     setStatusAlert({
-      msg: 'Deletado com sucesso!',
+      msg: "Deletado com sucesso!",
       hidden: true,
       type: "sucess",
     });
@@ -215,7 +214,19 @@ const Home: NextPage = () => {
             setPressure(target?.value.replace(/[A-Z]/gi, ""))
           }
         />
-        <Button type="submit" text="Salvar" />
+        <Styles.WrapperButtons content="flex-end">
+          <Button
+            type="submit"
+            width="170px"
+            text={documentId ? "Atualizar" : "Salvar"}
+          />
+          <Button
+            type="button"
+            width="170px"
+            text="limpar"
+            onClick={clearAllFields}
+          />
+        </Styles.WrapperButtons>
       </Styles.Form>
       <Table>
         <List

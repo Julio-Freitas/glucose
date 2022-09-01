@@ -1,3 +1,4 @@
+import Button from "components/button";
 import styled from "styled-components";
 
 export const NavigationDropdown = styled.div`
@@ -49,7 +50,7 @@ export const Option = styled.li<OptionAttr>`
   `}
 `;
 
-export const Button = styled.button`
+export const ButtonFilter = styled(Button)`
   cursor: pointer;
   padding: 10px;
   background-color: #002ead;

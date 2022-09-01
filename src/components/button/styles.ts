@@ -6,7 +6,8 @@ type buttonStyleProps = {
 
 export const Button = styled.button<buttonStyleProps>`
   background-color: #002ead;
-  border: 1px solid #8795a2;
+  box-sizing: border-box;
+  border: 1px solid rgb(136, 114, 178);
   border-left: none;
   color: #fff;
   display: inline-flex;
@@ -23,6 +24,7 @@ export const Button = styled.button<buttonStyleProps>`
   height: ${({ height }) => height || "auto"};
   gap: 15px;
   opacity: .8;
+  height: 40px;
 
   &:hover {
     background-color: #002ead;

@@ -5,12 +5,21 @@ export const Container = styled.div`
   align-items: stretch;
   height: 50px;
   flex: 1;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: rgb(47 10 119 / 35%) 0px 5px 6px, rgb(0 0 0 / 20%) 0px -4px 0px inset;
 `;
 
 export const Input = styled.input`
   height: auto;
   padding: 5px 10px;
-  flex: 1
+  flex: 1;
+  border: 0;
+  color: rgb(47, 10, 119);
+  border-radius: inherit;
+  &::placeholder {
+    color: rgb(47, 10, 119);
+  }
 `;
 
 export const Button = styled.button`

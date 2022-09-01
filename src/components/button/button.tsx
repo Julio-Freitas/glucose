@@ -4,7 +4,7 @@ import * as Style from "./styles";
 type TypeButton = ButtonHTMLAttributes<HTMLButtonElement>;
 
 type propsButton = {
-  text: string;
+  text?: string;
   width?: string;
   icon?: ReactNode ;
   height?: string

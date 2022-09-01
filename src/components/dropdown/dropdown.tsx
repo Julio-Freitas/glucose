@@ -7,7 +7,6 @@ type DropdownProps = {
   className?: string;
 };
 
-
 const options = [
   {
     value: "all",
@@ -17,7 +16,7 @@ const options = [
   {
     value: "last-3-days",
     text: "Últimos 3 dias",
-    icon: <FaCalendarAlt />
+    icon: <FaCalendarAlt />,
   },
 ];
 const DropdownMenu: React.FC<DropdownProps> = ({
@@ -52,13 +51,13 @@ const DropdownMenu: React.FC<DropdownProps> = ({
 
   return (
     <Styles.NavigationDropdown tabIndex={0} ref={ref} className={className}>
-      <Styles.Button
+      <Styles.ButtonFilter
         onClick={() => setDropdown((prev) => !prev)}
         type="button"
         aria-expanded={dropdown ? "true" : "false"}
-      >
-        <FaFilter /> Filtrar Por
-      </Styles.Button>
+        text="Filtrar Por"
+        icon={<FaFilter />}
+      />
 
       <Styles.Select dropdown={dropdown}>
         {options.map(({ value, text, icon }) => (
