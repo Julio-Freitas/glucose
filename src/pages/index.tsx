@@ -21,12 +21,8 @@ import {
 import { FaEye } from "react-icons/fa";
 import DropdownMenu from "components/dropdown";
 import Alert from "components/alert";
+import { AlertState } from "types/alert";
 
-type AlertState = {
-  msg: string;
-  hidden: boolean;
-  type: "sucess" | "error" | "warn";
-};
 const Home: NextPage = () => {
   const [listItem, setListItem] = useState<Item[]>([
     {
@@ -47,6 +43,7 @@ const Home: NextPage = () => {
   const [pressure, setPressure] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [documentId, setDocumentId] = useState<string | null>(null);
+  const [newId, setNewId] = useState("");
 
   const [statusAlert, setStatusAlert] = useState<AlertState>({
     msg: "",
@@ -55,7 +52,7 @@ const Home: NextPage = () => {
   });
 
   const getAllList = useCallback(
-    async () => setListItem((await getAllGlucose()) as Item[]),
+    async () => setListItem(await getAllGlucose()),
     []
   );
   useEffect(() => {
@@ -64,7 +61,7 @@ const Home: NextPage = () => {
 
   const filterGlucose = async () => {
     const result = await glucoseLastThreeDays();
-    setListItem(result as Item[]);
+    setListItem(result);
   };
 
   const clearAllFields = () => {
@@ -74,17 +71,15 @@ const Home: NextPage = () => {
     setCorrection("");
     setPressure("");
     setDocumentId(null);
+    setTimeout(() => setNewId(""), 600);
   };
 
   const canAddField = () => {
     const isFill = !date || !time || !glucose;
-
     const monthCurrent = new Date().getMonth() + 1;
-    const dayCurrent = new Date().getDate();
     const monthForm = Number(date?.split("-")[1]);
-    const dayForm = Number(date?.split("-")[2]);
-    const yearForm = new Date(date as string).getFullYear();
-    const currentYear = new Date().getFullYear();
+    // const yearForm = new Date(date as string).getFullYear();
+    // const currentYear = new Date().getFullYear();
 
     if (isFill) {
       setStatusAlert({
@@ -94,7 +89,6 @@ const Home: NextPage = () => {
       });
       return false;
     }
-    console.log(yearForm !== currentYear);
 
     if (monthForm > monthCurrent) {
       setStatusAlert({
@@ -124,14 +118,17 @@ const Home: NextPage = () => {
       pressure,
     };
 
+    setNewId(newItem.id as string);
+
     documentId ? updateGLucose(documentId, newItem) : addGlucose(newItem);
+
     setStatusAlert({
       msg,
       hidden: true,
       type: "sucess",
     });
-    clearAllFields();
     getAllList();
+    clearAllFields();
   };
 
   const handleFilter = (value: string) => {
@@ -152,7 +149,7 @@ const Home: NextPage = () => {
   };
 
   const _handleEditItem = (item: Item) => {
-    const { correction, date, documentId, glucose, id, pressure, time } = item;
+    const { correction, date, documentId, glucose, pressure, time } = item;
 
     setDate(date);
     setTime(time as string);
@@ -231,6 +228,7 @@ const Home: NextPage = () => {
       <Table>
         <List
           list={listItem}
+          newItem={newId}
           onDeleteItem={_handleDeletedItem}
           onEditItem={_handleEditItem}
         />

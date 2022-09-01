@@ -14,4 +14,5 @@ export type propsActionsList = {
 };
 export type ListItem  = {
   list: Item[];
+  newItem?: string
 } & propsActionsList;

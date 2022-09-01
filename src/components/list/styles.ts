@@ -8,15 +8,21 @@ export const Ul = styled.ul`
   width: 100%;
 `;
 
-export const Li = styled.li`
+export const Li = styled.li<{ newItem: boolean }>`
   height: 50px;
-  background: #d6d6d6;
-  border: 1px solid #fff;
+
+  border:  0;
+  box-shadow: 0 0 5px 0  #bbb;
   padding: 5px 15px;
   width: 100%;
   display: flex;
   align-items: center;
+  background-color: ${({ newItem }) => (newItem ? "#aaa" : " #d6d6d8;")};
+  transition: ease-in-out .5s;
 
+  &:hover {
+    background-color: #aaa;
+  }
   @media (max-width: 768px) {
     width: 600px;
   }

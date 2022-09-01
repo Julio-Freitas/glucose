@@ -4,14 +4,14 @@ import { ListItem } from "types/list";
 import { formatDateTo } from "utils/formartDate";
 import { FaTrash, FaEdit } from "react-icons/fa";
 
-const List: React.FC<ListItem> = ({ list, onDeleteItem, onEditItem }) => {
+const List: React.FC<ListItem> = ({ list, onDeleteItem, onEditItem, newItem= false }) => {
   return (
     <Style.Ul>
       {list?.length > 0 &&
         list
           .filter((item) => item?.id)
           .map((item) => (
-            <Style.Li key={item?.id}>
+            <Style.Li key={item?.id} newItem={newItem === item.id}>
               <Style.TextSpan>
                 {formatDateTo({
                   lang: "pt-br",
@@ -36,4 +36,4 @@ const List: React.FC<ListItem> = ({ list, onDeleteItem, onEditItem }) => {
   );
 };
 
-export default List;
+export default React.memo(List);
