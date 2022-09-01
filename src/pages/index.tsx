@@ -78,10 +78,14 @@ const Home: NextPage = () => {
 
   const canAddField = () => {
     const isFill = !date || !time || !glucose;
+
     const monthCurrent = new Date().getMonth() + 1;
     const dayCurrent = new Date().getDate();
     const monthForm = Number(date?.split("-")[1]);
     const dayForm = Number(date?.split("-")[2]);
+    const yearForm = new Date(date as string).getFullYear()
+    const currentYear =  new Date().getFullYear()
+
 
     if (isFill) {
       setStatusAlert({
@@ -91,7 +95,9 @@ const Home: NextPage = () => {
       });
       return false;
     }
-    if (monthForm > monthCurrent || dayForm > dayCurrent) {
+    console.log(yearForm !== currentYear)
+    
+    if (monthForm > monthCurrent) {
       setStatusAlert({
         msg: "Não é possivel lançar datas futuras",
         hidden: true,
