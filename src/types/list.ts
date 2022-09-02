@@ -9,10 +9,10 @@ export type Item = {
 };
 
 export type propsActionsList = {
-  onDeleteItem: (documentId: string) => void;
-  onEditItem: (item: Item) => void;
+  onDeleteItem?: (documentId: string) => void;
+  onEditItem?: (item: Item) => void;
 };
 export type ListItem  = {
-  list: Item[];
+  list?: Item[];
   newItem?: string
 } & propsActionsList;

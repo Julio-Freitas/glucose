@@ -3,12 +3,16 @@ import * as Style from "./styles";
 import { ListItem } from "types/list";
 import { formatDateTo } from "utils/formartDate";
 import { FaTrash, FaEdit } from "react-icons/fa";
+import { UseListGlucoseContext } from "context/list/contextList";
 
-const List: React.FC<ListItem> = ({ list, onDeleteItem, onEditItem, newItem= false }) => {
+const List: React.FC<ListItem> = ({ newItem = false }) => {
+  const { listItem, removeItemGLucose, editiItemGLucose } =
+    UseListGlucoseContext();
+
   return (
     <Style.Ul>
-      {list?.length > 0 &&
-        list
+      {listItem?.length > 0 &&
+        listItem
           .filter((item) => item?.id)
           .map((item) => (
             <Style.Li key={item?.id} newItem={newItem === item.id}>
@@ -24,11 +28,9 @@ const List: React.FC<ListItem> = ({ list, onDeleteItem, onEditItem, newItem= fal
               <Style.TextSpan>{item.pressure}</Style.TextSpan>
               <Style.GroupActions>
                 <FaTrash
-                  onClick={() =>
-                    item.documentId && onDeleteItem(item.documentId)
-                  }
+                  onClick={() => item.documentId && removeItemGLucose(item.documentId)}
                 />
-                <FaEdit onClick={() => onEditItem(item)} />
+                <FaEdit onClick={() => editiItemGLucose(item)} />
               </Style.GroupActions>
             </Style.Li>
           ))}
