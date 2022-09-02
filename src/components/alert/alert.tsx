@@ -1,45 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { UseAlertContext } from "context/alert/context";
 import * as Styled from "./style";
-
 
 type AlertProps = {
   delay?: number;
-  hiddenAlert: (time: boolean) => void;
-  msg: string;
-  hidden: boolean;
-  type: "sucess" | "error" | "warn";
 };
 
-const Alert: React.FC<AlertProps> = ({
-  delay,
-  hiddenAlert,
-  msg,
-  hidden,
-  type,
-}) => {
-  const [progress, setprogress] = useState(0);
-  const delayref = (delay || 100) / 100;
+const Alert: React.FC<AlertProps> = ({ delay = 1000 }) => {
+  const { statusAlert, progress, setDelay } = UseAlertContext();
+  const { msg, hidden, type } = statusAlert;
 
   useEffect(() => {
-    if (hidden) {
-      const interval = setInterval(() => {
-        setprogress((oldvalue) => {
-          let newValue = oldvalue + 1;
-          if (newValue >= 100) {
-            clearInterval(interval);
-            hiddenAlert(true);
-            return 100;
-          }
-          return newValue;
-        });
-      }, delayref);
-      return;
-    }
-    setprogress(0);
-  }, [hidden]);
+    setDelay(delay);
+  }, [delay]);
 
   return (
-    <Styled.ContainerAlert type={type} hidden={hidden}>
+    <Styled.ContainerAlert type={type || "sucess"} hidden={hidden}>
       <Styled.Progress width={`${progress}%`} />
       <Styled.Context>
         <Styled.Text>{msg}</Styled.Text>
@@ -47,4 +23,4 @@ const Alert: React.FC<AlertProps> = ({
     </Styled.ContainerAlert>
   );
 };
-export default Alert;
+export default React.memo(Alert);
